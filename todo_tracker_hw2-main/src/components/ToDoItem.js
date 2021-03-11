@@ -21,13 +21,13 @@ class ToDoItem extends Component {
         console.log("\t\t\tToDoItem " + this.props.toDoListItem.id + " did mount");
     }
     handleItemUp = () => {
-        this.props.moveItemCallBack(this.props.toDoListItem.id,1);
+        this.props.moveItemCallBack(this.props.toDoListItem,1);
     }
     handleItemDown = () => {
-        this.props.moveItemCallBack(this.props.toDoListItem.id,-1);
+        this.props.moveItemCallBack(this.props.toDoListItem,-1);
     }
     handleDeleteItem = () =>{
-        this.props.deleteItemCallBack(this.props.toDoListItem.id);
+        this.props.deleteItemCallBack(this.props.toDoListItem);
     }
 
     //for task change
@@ -40,7 +40,7 @@ class ToDoItem extends Component {
     handleTaskChange = (e) =>{
         let listItem = this.props.toDoListItem;
         var task=e.target.value;
-        this.props.itemChangeCallBack(listItem.id, task, listItem.due_date, listItem.status);
+        this.props.itemChangeCallBack(listItem, task, listItem.due_date, listItem.status);
         this.setState({
             taskChange:false
         })
@@ -56,7 +56,7 @@ class ToDoItem extends Component {
     handleDateChange = (e) =>{
         let listItem = this.props.toDoListItem;
         var date=e.target.value;
-        this.props.itemChangeCallBack(listItem.id, listItem.description, date, listItem.status);
+        this.props.itemChangeCallBack(listItem, listItem.description, date, listItem.status);
         this.setState({
             dueDateChange:false
         })
@@ -72,7 +72,7 @@ class ToDoItem extends Component {
     handleStatusChange = (e) =>{
         let listItem = this.props.toDoListItem;
         var status=e.target.value;
-        this.props.itemChangeCallBack(listItem.id, listItem.description, listItem.due_date, status);
+        this.props.itemChangeCallBack(listItem, listItem.description, listItem.due_date, status);
         this.setState({
             statusChange:false
         })

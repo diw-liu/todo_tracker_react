@@ -1,7 +1,11 @@
 // IMPORT ALL THE THINGS NEEDED FROM OTHER JAVASCRIPT SOURCE FILES
 import React, { Component } from 'react';
 import testData from './test/testData.json'
-import jsTPS from './common/jsTPS'
+import jsTPS from './common/jsTPS.js'
+import AddNewItem_Transaction from './transactions/AddNewItem_Transaction.js'
+import MoveItem_Transaction from './transactions/MoveItem_Transaction.js'
+import RemoveItem_Transaction from './transactions/RemoveItem_Transaction.js'
+import UpdateItem_Transaction from './transactions/UpdateItem_Transaction.js'
 
 // THESE ARE OUR REACT COMPONENTS
 import Navbar from './components/Navbar'
@@ -94,6 +98,27 @@ class App extends Component {
     };
     return newToDoList;
   }
+  //Transaction
+  addNewItemTransaction = () =>{
+    let transaction = new AddNewItem_Transaction(this);
+    this.tps.addTransaction(transaction);
+  }
+  moveItemTransaction = (id,step) =>{
+    let transaction = new MoveItem_Transaction(this,id,step);
+    this.tps.addTransaction(transaction);
+  }
+  removeItemTransaction = (item) =>{
+    let transaction = new RemoveItem_Transaction(this,item);
+    this.tps.addTransaction(transaction);
+  }
+  updateItemTransaction = (item,desc,dd,status) =>{
+    console.log("udc")
+    let oldDesc=item.description;
+    let oldDD=item.due_date;
+    let oldStatus=item.status;
+    let transaction = new UpdateItem_Transaction(this,item,oldDesc,desc,oldDD,dd,oldStatus,status);
+    this.tps.addTransaction(transaction);
+  }
 
   //Constr
   addNewItem = () =>{
@@ -105,6 +130,7 @@ class App extends Component {
       currentList:temp,
       nextListItemId:this.state.nextListItemId+1
     })
+    return newToDoListItem[0];
   }
 
   makeNewToDoListItem = () =>  {
@@ -129,14 +155,9 @@ class App extends Component {
 
 
   //Construction site
-  moveItem = (id,step) =>{
+  moveItem = (item,step) =>{
     var items = this.state.currentList.items;
-    var index = -1;
-    for(var i=0;i<items.length;i++){
-      if(items[i].id==id){
-         index=i;
-      }
-    }
+    var index=  this.iterateCurrentArray(item,items);
     if((index>0&&step==1)|(index<items.length-1&&step==-1)){
       var temp=items[index];
       items[index]=items[index-step];
@@ -147,17 +168,32 @@ class App extends Component {
     })
   }
 
-  deleteItem = (id) =>{
+  deleteItem = (item) =>{
     var items = this.state.currentList.items;
-    var index = -1;
-    for(var i=0;i<items.length;i++){
-      if(items[i].id==id){
-        index=i;
-     }
-    }
+    var index=this.iterateCurrentArray(item,items);
     items.splice(index, 1);
     this.setState({
       currentList:{items}
+    })
+    return index;
+  }
+
+  itemChange = (item,desc,date,status) =>{
+    var items = this.state.currentList.items;
+    var index=this.iterateCurrentArray(item,items); 
+    items[index].description =desc;
+    items[index].due_date    =date;
+    items[index].status      =status;
+    this.setState({
+      currentList:{items}
+    })
+  }
+  
+  addItemAtIndex = (item,index) =>{
+    var temp=this.state.currentList;
+    temp.items.splice(index, 0, item);
+    this.setState({
+      currentList:temp
     })
   }
 
@@ -166,31 +202,46 @@ class App extends Component {
       currentList: {items: []}
     })
   }
-  
-  itemChange = (id,desc,date,status) =>{
-    var items = this.state.currentList.items;
-    for(var i=0;i<items.length;i++){
-      if(items[i].id==id){
-          items[i].description =desc;
-          items[i].due_date    =date;
-          items[i].status      =status;
-      }
-    }
-  }
 
   removeCurrentList = () =>{
     var todoList=this.state.toDoLists
-    var index = -1;
-    for(var i=0;i<todoList.length;i++){
-      if(todoList[i]===this.state.currentList){
-        index=i;
-      }
-    }
+    var index=this.iterateCurrentArray(this.state.currentList,todoList); 
     todoList.splice(index, 1);
     this.setState({
       toDoLists: todoList,
       currentList: {items: []}
     })
+  }
+
+  iterateCurrentArray(item,items){
+    var index = -1;
+    for(var i=0;i<items.length;i++){
+      if(items[i]==item){
+        index=i;
+     }
+    }
+    return index;
+  }
+
+  // SIMPLE UNDO/REDO FUNCTIONS
+  undo = () => {
+    if (this.tps.hasTransactionToUndo()) {
+        this.tps.undoTransaction();
+        // if (!this.tps.hasTransactionToUndo()) {
+        //     this.view.disableButton("undo-button");
+        // }
+        // this.view.enableButton("redo-button");
+    }
+  } 
+
+  redo = () => {
+    if (this.tps.hasTransactionToRedo()) {
+        this.tps.doTransaction();
+        // if (!this.tps.hasTransactionToRedo()) {
+        //     this.view.disableButton("redo-button");
+        // }
+        // this.view.enableButton("undo-button");
+    }
   }
 
   
@@ -207,13 +258,14 @@ class App extends Component {
         />
         <Workspace 
           toDoListItems={items} 
-          moveItemCallBack={this.moveItem}
+          moveItemCallBack={this.moveItemTransaction}
           closeCurrentListCallBack={this.closeCurrentList}
-          deleteItemCallBack={this.deleteItem}
-          itemChangeCallBack={this.itemChange}
+          deleteItemCallBack={this.removeItemTransaction}
+          itemChangeCallBack={this.updateItemTransaction}
           removeCurrentListCallBack={this.removeCurrentList}
-          addNewItemCallBack={this.addNewItem}
-          
+          addNewItemCallBack={this.addNewItemTransaction}
+          undoCallBack={this.undo}
+          redoCallBack={this.redo}
         />
       </div>
     );
