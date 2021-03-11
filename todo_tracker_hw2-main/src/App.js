@@ -179,6 +179,7 @@ class App extends Component {
   }
 
   itemChange = (item,desc,date,status) =>{
+    console.log(this.state.todoList)
     var items = this.state.currentList.items;
     var index=this.iterateCurrentArray(item,items); 
     items[index].description =desc;
@@ -222,6 +223,29 @@ class App extends Component {
     }
     return index;
   }
+  
+  componentDidMount(){
+    document.addEventListener("keydown", this.handleKey, false);
+  }
+
+  handleKey = (e) =>{
+    console.log("call ")
+    if(e.key==="z"){
+      this.undo();
+    }
+    if(e.key==="y"){
+      this.redo();
+    }
+  }
+
+  changeListName = (list,name)=>{
+    var todoList=this.state.toDoLists
+    var index=this.iterateCurrentArray(list,todoList);
+    todoList[index].name=name;
+    this.setState({
+      toDoLists:todoList
+    }) 
+  }
 
   // SIMPLE UNDO/REDO FUNCTIONS
   undo = () => {
@@ -255,6 +279,7 @@ class App extends Component {
           toDoLists={this.state.toDoLists}
           loadToDoListCallback={this.loadToDoList}
           addNewListCallback={this.addNewList}
+          changeListNameCallback={this.changeListName}
         />
         <Workspace 
           toDoListItems={items} 
@@ -266,6 +291,7 @@ class App extends Component {
           addNewItemCallBack={this.addNewItemTransaction}
           undoCallBack={this.undo}
           redoCallBack={this.redo}
+
         />
       </div>
     );
