@@ -110,3 +110,8 @@
 #add-item-button, #delete-list-button, #close-list-button {
     text-align: center;
 }
+
+.disabled, .disabled:hover {
+    cursor:auto;
+    color: rgb(.90,.90,.90);
+}

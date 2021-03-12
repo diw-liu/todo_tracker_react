@@ -9,9 +9,8 @@ class LeftSidebar extends Component {
     }
 
     handleAddNewList = () => {
-        this.props.addNewListCallback();
+        if(this.props.addButton) this.props.addNewListCallback();
     }
-
     render() {
         return (
             <div id="left-sidebar">
@@ -32,6 +31,8 @@ class LeftSidebar extends Component {
                             toDoList={toDoList}                                // PASS THE LIST TO THE CHILDREN
                             loadToDoListCallback={this.props.loadToDoListCallback}  // PASS THE CALLBACK TO THE CHILDREN
                             changeListNameCallback={this.props.changeListNameCallback}
+                            setAddButtonStateCallback={this.props.setAddButtonStateCallback}
+                            emptyTransactionCallback={this.props.emptyTransactionCallback}
                         />
                     ))
                 }

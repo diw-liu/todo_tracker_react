@@ -23,11 +23,14 @@ class ListLink extends Component {
             this.timer = setTimeout(()=>{
                     this.props.loadToDoListCallback(this.props.toDoList)
                 }, 200)
+            
+            this.props.setAddButtonStateCallback(false);
         }else if (event.detail === 2){
             this.setState({
                 nameChange:true
             })
         }
+        this.props.emptyTransactionCallback();
     }
     handleNameChange =(event)=>{
         this.props.changeListNameCallback(this.props.toDoList,event.target.value);

@@ -16,7 +16,12 @@ class Workspace extends Component {
     }
 
     handleCloseCurrentList = () => {
-        this.props.closeCurrentListCallBack();
+        if(this.props.threeButton){
+            console.log("cc a")
+            this.props.closeCurrentListCallBack();
+            this.props.setAddButtonStateCallback(true);
+            this.props.emptyTransactionCallback();
+        }
     }
     handleRedo =()=>{
         this.props.redoCallBack();
@@ -25,17 +30,25 @@ class Workspace extends Component {
         this.props.undoCallBack();
     }
     handleAddNewItem = () =>{
-        this.props.addNewItemCallBack();
+        if(this.props.threeButton){
+            console.log("cc a")
+            this.props.addNewItemCallBack();
+        }
     }
 
     handleRemoveCurrentList = () =>{
         this.props.removeCurrentListCallBack();
         this.removeDeleteDialog();
+        this.props.setAddButtonStateCallback(true);
+        this.props.emptyTransactionCallback();
     }
     displayDeleteDialog = () =>{
-        this.setState({
-            deleteDisplay:true
-        })
+        if(this.props.threeButton){
+            console.log("cc a")
+            this.setState({
+                deleteDisplay:true
+            })
+        }
     }
     removeDeleteDialog = () =>{
         this.setState({
@@ -52,11 +65,11 @@ class Workspace extends Component {
                     <div id="date-col-header" className="item-col todo-button">Due Date</div>
                     <div id="status-col-header" className="item-col todo-button">Status</div>
                     <div className="item-col" display="flex" flexDirection="row" flexWrap="nowrap">
-                        <Undo id="undo-button" className="list-item-control material-icons todo-button" onClick={this.handleUndo}/>
-                        <Redo id="redo-button" className="list-item-control material-icons todo-button" onClick={this.handleRedo}/>
-                        <AddBox id="add-item-button" className="list-item-control material-icons todo-button" onClick={this.handleAddNewItem} />
-                        <Delete id="delete-list-button" className="list-item-control material-icons todo-button" onClick={this.displayDeleteDialog} />
-                        <Close id="close-list-button" className="list-item-control material-icons todo-button" onClick={this.handleCloseCurrentList}/>
+                        <Undo id="undo-button" className="list-item-control material-icons todo-button disabled" onClick={this.handleUndo}/>
+                        <Redo id="redo-button" className="list-item-control material-icons todo-button disabled" onClick={this.handleRedo}/>
+                        <AddBox id="add-item-button" className="list-item-control material-icons todo-button disabled" onClick={this.handleAddNewItem} />
+                        <Delete id="delete-list-button" className="list-item-control material-icons todo-button disabled" onClick={this.displayDeleteDialog} />
+                        <Close id="close-list-button" className="list-item-control material-icons todo-button disabled" onClick={this.handleCloseCurrentList}/>
                     </div>
                 </div>
                 <div id="todo-list-items-div">

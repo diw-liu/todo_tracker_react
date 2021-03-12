@@ -12,9 +12,7 @@ export default class AddNewItem_Transaction extends jsTPS_Transaction {
 
     doTransaction() {
         // MAKE A NEW ITEM
-        console.log("ani active");
         this.itemAdded = this.model.addNewItem();
-        console.log(this.itemAdded);
     }
 
     undoTransaction() {

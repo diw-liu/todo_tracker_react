@@ -56,7 +56,8 @@ class App extends Component {
       currentList: {items: []},
       nextListId: highListId+1,
       nextListItemId: highListItemId+1,
-      useVerboseFeedback: true
+      addButton: true,
+      threeButton: false
     }
   }
 
@@ -102,22 +103,25 @@ class App extends Component {
   addNewItemTransaction = () =>{
     let transaction = new AddNewItem_Transaction(this);
     this.tps.addTransaction(transaction);
+    this.enableButton("undo-button");
   }
   moveItemTransaction = (id,step) =>{
     let transaction = new MoveItem_Transaction(this,id,step);
     this.tps.addTransaction(transaction);
+    this.enableButton("undo-button");
   }
   removeItemTransaction = (item) =>{
     let transaction = new RemoveItem_Transaction(this,item);
     this.tps.addTransaction(transaction);
+    this.enableButton("undo-button");
   }
   updateItemTransaction = (item,desc,dd,status) =>{
-    console.log("udc")
     let oldDesc=item.description;
     let oldDD=item.due_date;
     let oldStatus=item.status;
     let transaction = new UpdateItem_Transaction(this,item,oldDesc,desc,oldDD,dd,oldStatus,status);
     this.tps.addTransaction(transaction);
+    this.enableButton("undo-button");
   }
 
   //Constr
@@ -179,7 +183,6 @@ class App extends Component {
   }
 
   itemChange = (item,desc,date,status) =>{
-    console.log(this.state.todoList)
     var items = this.state.currentList.items;
     var index=this.iterateCurrentArray(item,items); 
     items[index].description =desc;
@@ -229,7 +232,6 @@ class App extends Component {
   }
 
   handleKey = (e) =>{
-    console.log("call ")
     if(e.key==="z"){
       this.undo();
     }
@@ -247,28 +249,66 @@ class App extends Component {
     }) 
   }
 
+  setAddButtonState = (bool) =>{
+    if(!bool){
+      this.disableButton("add-list-button")
+    }else{
+      this.enableButton("add-list-button")
+    }
+    var temp=document.getElementsByClassName("list-item-control")
+    for(var i=2;i<5;i++){
+      if(bool){
+        temp[i].classList.add("disabled");
+      }else{
+        temp[i].classList.remove("disabled");
+      }
+    }
+    for(var i=0;i<1;i++){
+      if(bool){
+        temp[i].classList.add("disabled");
+      }
+    }
+    this.setState({
+      addButton:bool,
+      threeButton:!bool
+    })
+  }
+
   // SIMPLE UNDO/REDO FUNCTIONS
   undo = () => {
     if (this.tps.hasTransactionToUndo()) {
         this.tps.undoTransaction();
-        // if (!this.tps.hasTransactionToUndo()) {
-        //     this.view.disableButton("undo-button");
-        // }
-        // this.view.enableButton("redo-button");
+        if (!this.tps.hasTransactionToUndo()) {
+          this.disableButton("undo-button");
+        }
+        this.enableButton("redo-button");
     }
   } 
 
   redo = () => {
     if (this.tps.hasTransactionToRedo()) {
         this.tps.doTransaction();
-        // if (!this.tps.hasTransactionToRedo()) {
-        //     this.view.disableButton("redo-button");
-        // }
-        // this.view.enableButton("undo-button");
+        if (!this.tps.hasTransactionToRedo()) {
+            this.disableButton("redo-button");
+        }
+        this.enableButton("undo-button");
     }
   }
 
+  disableButton(id) {
+    let undoButton = document.getElementById(id);
+    undoButton.classList.add("disabled");
+  }
+
+  enableButton(id) {
+    let redoButton = document.getElementById(id);
+    redoButton.classList.remove("disabled");
+  }
   
+  emptyTransaction = () =>{
+    this.tps.clearAllTransactions();
+  }
+
   render() {
     let items = this.state.currentList.items;
     console.log(this.state.toDoLists);
@@ -276,12 +316,16 @@ class App extends Component {
       <div id="root">
         <Navbar />
         <LeftSidebar 
+          addButton={this.state.addButton}
           toDoLists={this.state.toDoLists}
           loadToDoListCallback={this.loadToDoList}
           addNewListCallback={this.addNewList}
           changeListNameCallback={this.changeListName}
+          setAddButtonStateCallback={this.setAddButtonState}
+          emptyTransactionCallback={this.emptyTransaction}
         />
         <Workspace 
+          threeButton={this.state.threeButton}
           toDoListItems={items} 
           moveItemCallBack={this.moveItemTransaction}
           closeCurrentListCallBack={this.closeCurrentList}
@@ -291,7 +335,8 @@ class App extends Component {
           addNewItemCallBack={this.addNewItemTransaction}
           undoCallBack={this.undo}
           redoCallBack={this.redo}
-
+          setAddButtonStateCallback={this.setAddButtonState} 
+          emptyTransactionCallback={this.emptyTransaction} 
         />
       </div>
     );
