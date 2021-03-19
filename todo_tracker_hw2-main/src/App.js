@@ -133,7 +133,7 @@ class App extends Component {
     this.setState({
       currentList:temp,
       nextListItemId:this.state.nextListItemId+1
-    })
+    }, this.afterToDoListsChangeComplete);
     return newToDoListItem[0];
   }
 
@@ -154,7 +154,7 @@ class App extends Component {
 
     // WILL THIS WORK? @todo
     let toDoListsString = JSON.stringify(this.state.toDoLists);
-    localStorage.setItem("recent_work", toDoListsString);
+    localStorage.setItem("recentLists", toDoListsString);
   }
 
 
@@ -169,7 +169,7 @@ class App extends Component {
     }
     this.setState({
       currentList:{items}
-    })
+    }, this.afterToDoListsChangeComplete);
   }
 
   deleteItem = (item) =>{
@@ -178,7 +178,7 @@ class App extends Component {
     items.splice(index, 1);
     this.setState({
       currentList:{items}
-    })
+    }, this.afterToDoListsChangeComplete);
     return index;
   }
 
@@ -190,7 +190,7 @@ class App extends Component {
     items[index].status      =status;
     this.setState({
       currentList:{items}
-    })
+    }, this.afterToDoListsChangeComplete);
   }
   
   addItemAtIndex = (item,index) =>{
@@ -198,7 +198,7 @@ class App extends Component {
     temp.items.splice(index, 0, item);
     this.setState({
       currentList:temp
-    })
+    }, this.afterToDoListsChangeComplete);
   }
 
   closeCurrentList = () =>{
@@ -214,7 +214,7 @@ class App extends Component {
     this.setState({
       toDoLists: todoList,
       currentList: {items: []}
-    })
+    }, this.afterToDoListsChangeComplete);
   }
 
   iterateCurrentArray(item,items){
@@ -231,11 +231,11 @@ class App extends Component {
     document.addEventListener("keydown", this.handleKey, false);
   }
 
-  handleKey = (e) =>{
-    if(e.key==="z"){
+  handleKey = (event) =>{
+    if(event.ctrlKey && event.key==='z'){
       this.undo();
     }
-    if(e.key==="y"){
+    if(event.ctrlKey && event.key==="y"){
       this.redo();
     }
   }
@@ -246,15 +246,18 @@ class App extends Component {
     todoList[index].name=name;
     this.setState({
       toDoLists:todoList
-    }) 
+    }, this.afterToDoListsChangeComplete);
   }
 
   setAddButtonState = (bool) =>{
     if(!bool){
       this.disableButton("add-list-button")
+      document.getElementById("add-list-button").style.color="black"
     }else{
       this.enableButton("add-list-button")
+      document.getElementById("add-list-button").style.color="#ffc819"
     }
+
     var temp=document.getElementsByClassName("list-item-control")
     for(var i=2;i<5;i++){
       if(bool){
@@ -263,7 +266,8 @@ class App extends Component {
         temp[i].classList.remove("disabled");
       }
     }
-    for(var i=0;i<1;i++){
+
+    for(var i=0;i<2;i++){
       if(bool){
         temp[i].classList.add("disabled");
       }

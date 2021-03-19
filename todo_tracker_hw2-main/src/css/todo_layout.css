@@ -22,6 +22,7 @@
 }
 
 #left-sidebar {
+    
     position:absolute;
     height:94%;
     width:13%;
@@ -55,10 +56,15 @@
 }
 
 #todo-lists-list {
+    display: flex;
+    overflow: scroll;
+    overflow-x: hidden;
+    flex-direction: column;
+    margin: 0;
     position:absolute;
     text-align: center;
     height:80%;
-    width:100%;
+    width:90%;
     top: 8%;
 }
 
@@ -83,6 +89,7 @@
 }
 
 #todo-list-items-div {
+    overflow-y: scroll;
     height:96%;
     top:7%;
     display: flex;
@@ -101,9 +108,9 @@
 }
 
 .list-controls-col {
-    /*display: flex;
+    display: flex;
     flex-direction: row; 
-    flex-wrap: nowrap;*/
+    flex-wrap: nowrap;
 }
 
 .list-item-control {

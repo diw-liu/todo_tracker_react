@@ -74,11 +74,17 @@
     border-width: 1px;
     font-weight: bold;
 }
+.list-item-card:hover {
+    background-color: var(--swatch-complement);
+}
 
 .todo-list-button {
     cursor:pointer;
     background-color: var(--swatch-complement);
     font-weight: bold;
+}
+.top{
+    color: var(--swatch-accent);
 }
 
 .todo-list-button:hover {
@@ -112,6 +118,22 @@
 }
 
 .disabled, .disabled:hover {
+    pointer-events: none;
     cursor:auto;
     color: rgb(.90,.90,.90);
+}
+
+.todo-list-input:hover{
+    background-color: var(--swatch-text);
+}
+
+.spacer-small {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    align-self: flex-start;
+    justify-content: flex-start;
+    text-align: start;
+    margin: 0;
 }

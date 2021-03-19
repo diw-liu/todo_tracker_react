@@ -40,11 +40,15 @@ class ListLink extends Component {
     }
     render() {
         // DISPLAY WHERE WE ARE
+        var top=""
+        if(this.props.top){
+            top="top"
+        }
         console.log("\t\t\tListLink render");
         return (
             <div>
-                {this.state.nameChange ? <input className='todo-list-button' type="text" onBlur={this.handleNameChange} defaultValue={this.props.toDoList.name} ></input>
-                    :  <div className='todo-list-button' onClick={this.handleClick}>{this.props.toDoList.name}</div>
+                {this.state.nameChange ? <input className='todo-list-button todo-list-input' type="text" onBlur={this.handleNameChange} defaultValue={this.props.toDoList.name} ></input>
+                    :  <div className={"todo-list-button "+top} onClick={this.handleClick}>{this.props.toDoList.name}</div>
                 }
             </div>
             

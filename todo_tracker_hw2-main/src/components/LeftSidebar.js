@@ -9,9 +9,13 @@ class LeftSidebar extends Component {
     }
 
     handleAddNewList = () => {
-        if(this.props.addButton) this.props.addNewListCallback();
+        this.props.addNewListCallback();
     }
     render() {
+        let addButton="disabled"
+        if (this.props.addButton){
+            addButton=""
+        }
         return (
             <div id="left-sidebar">
                 <div id="left-sidebar-header" class="section-header">
@@ -19,14 +23,15 @@ class LeftSidebar extends Component {
                     <span class="left-sidebar-controls" id="add-undo-redo-box">
                         <AddBox 
                             id="add-list-button"
-                            className="material-icons todo_button"
+                            className={"material-icons todo_button "+addButton}
                             onClick={this.handleAddNewList} />
                     </span>
                 </div>
                 <div id="todo-lists-list">
                 {
-                    this.props.toDoLists.map((toDoList) => (
+                    this.props.toDoLists.map((toDoList,index) => (
                         <ListLink
+                            top={index==0&&!this.props.addButton}
                             key={toDoList.id}
                             toDoList={toDoList}                                // PASS THE LIST TO THE CHILDREN
                             loadToDoListCallback={this.props.loadToDoListCallback}  // PASS THE CALLBACK TO THE CHILDREN

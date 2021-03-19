@@ -14,10 +14,8 @@ class Workspace extends Component {
             deleteDisplay:false
         }
     }
-
     handleCloseCurrentList = () => {
         if(this.props.threeButton){
-            console.log("cc a")
             this.props.closeCurrentListCallBack();
             this.props.setAddButtonStateCallback(true);
             this.props.emptyTransactionCallback();
@@ -31,11 +29,9 @@ class Workspace extends Component {
     }
     handleAddNewItem = () =>{
         if(this.props.threeButton){
-            console.log("cc a")
             this.props.addNewItemCallBack();
         }
     }
-
     handleRemoveCurrentList = () =>{
         this.props.removeCurrentListCallBack();
         this.removeDeleteDialog();
@@ -44,7 +40,6 @@ class Workspace extends Component {
     }
     displayDeleteDialog = () =>{
         if(this.props.threeButton){
-            console.log("cc a")
             this.setState({
                 deleteDisplay:true
             })
@@ -74,28 +69,31 @@ class Workspace extends Component {
                 </div>
                 <div id="todo-list-items-div">
                     {
-                        this.props.toDoListItems.map((toDoListItem) => (
+                        this.props.toDoListItems.map((toDoListItem,index) => (
                         <ToDoItem
                             key={toDoListItem.id}
                             toDoListItem={toDoListItem}     // PASS THE ITEM TO THE CHILDREN
                             moveItemCallBack={this.props.moveItemCallBack}
+                            topDisable={index==0}
+                            bottomDisable={index==this.props.toDoListItems.length-1}
                             deleteItemCallBack={this.props.deleteItemCallBack}
                             itemChangeCallBack={this.props.itemChangeCallBack}
                         />))
                     }
                 </div>
                 { (this.state.deleteDisplay) ? 
-                    // <div class="modal" id="delete_modal" data-animation="slideInOutLeft">
-                        <div >
-                            <header >
-                                Delete list?
-                                <div onClick={this.removeDeleteDialog}>close</div>
-                            </header>
-                                <button onClick={this.handleRemoveCurrentList}>Confirm</button>
-                                <button onClick={this.removeDeleteDialog}>Cancel</button>
-                            
+                    <div id="modal-layout">
+                        <div id="modal">
+                            <div class="modal-header header">
+                                <h3>Delete List?</h3>
+                                <div class="modal-button deleteList" id="cancelDeleteList-button" onClick={this.removeDeleteDialog}>X</div>
+                            </div>   
+                            <div class="modal-header">
+                                <div class="modal-button" id="confirm" onClick={this.handleRemoveCurrentList}> Confirm </div>
+                                <div class="modal-button deleteList" id="noconfirm" onClick={this.removeDeleteDialog}> Cancel </div>
+                            </div>
                         </div>
-                    // </div>
+                    </div>
                     :null
                 }
                 <br />
